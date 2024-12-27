@@ -1,6 +1,5 @@
 package com.proj.service;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,11 +12,11 @@ public class UserService {
     private  UserRepository userRepository;
     
     
-    private final PasswordEncoder passwordEncoder;
+    
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
+        
     }
     
     @Transactional
@@ -28,8 +27,20 @@ public class UserService {
         if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new IllegalArgumentException("사용중인 이메일입니다.");
         }
-        user.setUserpassword(passwordEncoder.encode(user.getUserpassword()));
+        
         
         return userRepository.save(user);
+        
+    }
+ // 사용자 인증 (로그인)
+    public User authenticate(String username, String userpassword) {
+        // 사용자명으로 사용자 정보 조회
+        User user = userRepository.findByUsername(username);
+
+        // 사용자 존재 여부와 비밀번호 확인
+        if (user != null && user.getUserpassword().equals(userpassword)) {
+            return user;  // 인증 성공
+        }
+        return null;  // 인증 실패
     }
 }
