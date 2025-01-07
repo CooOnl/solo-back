@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proj.DTO.UserDto;
 import com.proj.model.User;
 import com.proj.service.UserService;
 
@@ -36,11 +37,31 @@ public class SigninController {
 
             if (authenticatedUser != null) {
                 HttpSession session = request.getSession();
-                session.setAttribute("username", user.getUsername());
-                return ResponseEntity.ok(Map.of(
-                    "message", "로그인 성공",
-                    "username", user.getUsername()
-                ));
+                session.setAttribute("user", authenticatedUser.getUsername());
+//                session.setAttribute("user", );
+                session.setMaxInactiveInterval(2 * 60);
+                
+                UserDto userDto = new UserDto(
+                		authenticatedUser.getUsername(),
+                		authenticatedUser.getName(),
+                		authenticatedUser.getEmail(),
+                		authenticatedUser.getUserbirth(),
+                		authenticatedUser.getUsernumber(),
+                		authenticatedUser.getRole()
+                		);
+                		
+                
+                // 필요한 데이터를 모두 반환
+                Map<String, Object> response = new HashMap<>();
+//                response.put("message", "로그인 성공");
+//                response.put("username", authenticatedUser.getUsername());
+//                response.put("name", authenticatedUser.getName());
+//                response.put("useremail", authenticatedUser.getEmail());
+//                response.put("userbirth", authenticatedUser.getUserbirth());
+//                response.put("usernumber", authenticatedUser.getUsernumber());
+                response.put("user",userDto);
+                
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("아이디 또는 비밀번호가 잘못되었습니다.");
             }
@@ -50,23 +71,24 @@ public class SigninController {
         }
     }
 
-    @GetMapping("/check-login")
-    public ResponseEntity<?> checkLoginStatus(HttpServletRequest request) {
-        String username = (String) request.getSession().getAttribute("username");
+    
+    
 
-        if (username != null) {
-            // 로그인 상태
-            Map<String, Object> response = new HashMap<>();
-            response.put("status", "logged_in");
-            response.put("username", username);
-            return ResponseEntity.ok(response); // HTTP 200 응답
-        } else {
-            // 로그인되지 않음
-            Map<String, String> response = new HashMap<>();
-            response.put("status", "not_logged_in");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response); // HTTP 401 응답
-        }
-    }
+//    @GetMapping("/check-login")
+//    public ResponseEntity<?> checkLoginStatus(HttpServletRequest request) {
+//        String username = (String) request.getSession().getAttribute("username");
+//
+//        if (username != null) {
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("status", "logged_in");
+//            response.put("username", username);
+//            return ResponseEntity.ok(response); // 로그인 상태 반환
+//        } else {
+//            Map<String, String> response = new HashMap<>();
+//            response.put("status", "not_logged_in");
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response); // 로그인되지 않음
+//        }
+//    }
 
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {

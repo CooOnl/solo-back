@@ -43,4 +43,10 @@ public class UserService {
         }
         return null;  // 인증 실패
     }
+    @Transactional(readOnly = true)
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username); 
+    }
+    
+    
 }
