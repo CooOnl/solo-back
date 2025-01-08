@@ -45,7 +45,8 @@ implementation	'org.apache.tomcat.embed:tomcat-embed-jasper'
 
 implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 
- 
+  // AWS
+    implementation 'com.amazonaws:aws-java-sdk-s3:1.12.568'
     
 }
 tasks.withType(JavaCompile) {

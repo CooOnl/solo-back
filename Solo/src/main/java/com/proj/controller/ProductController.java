@@ -1,6 +1,7 @@
 package com.proj.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +28,23 @@ public class ProductController {
     public List<Product> getAllProduct() {
         return productService.getAllProduct();
     }
+
+    // 국산차 필터링
+    @GetMapping("/domestic")
+    public List<Product> getDomesticCars() {
+        return productService.getAllProduct().stream()
+                .filter(product -> !product.isImported())
+                .collect(Collectors.toList());
+    }
+
+    // 수입차 필터링
+    @GetMapping("/imported")
+    public List<Product> getImportedCars() {
+        return productService.getAllProduct().stream()
+                .filter(product -> Boolean.TRUE.equals(product.isImported()))  // null-safe 필터링
+                .collect(Collectors.toList());
+    }
+
 
     // 검색 기능
     @GetMapping("/search")

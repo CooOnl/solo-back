@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +59,14 @@ public class PostController {
 //                                 .body("서버 오류가 발생했습니다. 오류 메시지: " + e.getMessage());
 //        }
 //    }
+    
+ // 게시글 상세 조회
+    @GetMapping("/apis/detail/{id}")
+    public Post getPostDetail(@PathVariable Long id) {
+        // 서비스에서 게시글 상세 정보 조회
+        return postService.getPostById(id);
+    }
+    
 
 
 
@@ -65,6 +74,7 @@ public class PostController {
     public Post createPost(@RequestBody Post post) {
         post.setDate(LocalDateTime.now());
         return postService.createPost(post);
+        
     }
 
     // 예외 처리 핸들러
